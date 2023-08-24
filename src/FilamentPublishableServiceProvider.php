@@ -19,24 +19,18 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
 {
     /**
      * Name of package.
-     *
-     * @var string
      */
     public static string $name = 'filament-publishable';
 
     /**
      * Namespace for views in package.
-     *
-     * @var string
      */
     public static string $viewNamespace = 'filament-publishable';
 
     /**
      * Handles setup and configuration of package.
      *
-     * @param Package $package Package object used for registration.
-     *
-     * @return void
+     * @param  Package  $package Package object used for registration.
      */
     public function configurePackage(Package $package): void
     {
@@ -64,8 +58,6 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
 
     /**
      * Fire additional functionality after package has been registered.
-     *
-     * @return void
      */
     public function packageRegistered(): void
     {
@@ -73,8 +65,6 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
 
     /**
      * Handles additional setup after package has been booted.
-     *
-     * @return void
      */
     public function packageBooted(): void
     {
@@ -90,8 +80,6 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
 
     /**
      * Gets the name of the package for asset registration.
-     *
-     * @return string|null
      */
     protected function getAssetPackageName(): ?string
     {
