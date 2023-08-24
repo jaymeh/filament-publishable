@@ -2,26 +2,42 @@
 
 namespace Jaymeh\FilamentPublishable;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
-use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Filesystem\Filesystem;
-use Jaymeh\FilamentPublishable\Commands\FilamentPublishableCommand;
 use Jaymeh\FilamentPublishable\Testing\TestsFilamentPublishable;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
+/**
+ * Service provider for registering package.
+ */
 class FilamentPublishableServiceProvider extends PackageServiceProvider
 {
+    /**
+     * Name of package.
+     *
+     * @var string
+     */
     public static string $name = 'filament-publishable';
 
+    /**
+     * Namespace for views in package.
+     *
+     * @var string
+     */
     public static string $viewNamespace = 'filament-publishable';
 
+    /**
+     * Handles setup and configuration of package.
+     *
+     * @param Package $package Package object used for registration.
+     *
+     * @return void
+     */
     public function configurePackage(Package $package): void
     {
         /*
@@ -30,24 +46,12 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('jaymeh/filament-publishable');
-            });
-
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
+            ->hasInstallCommand(
+                function (InstallCommand $command) {
+                    $command
+                        ->askToStarRepoOnGitHub('jaymeh/filament-publishable');
+                }
+            );
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
@@ -58,10 +62,20 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
         }
     }
 
+    /**
+     * Fire additional functionality after package has been registered.
+     *
+     * @return void
+     */
     public function packageRegistered(): void
     {
     }
 
+    /**
+     * Handles additional setup after package has been booted.
+     *
+     * @return void
+     */
     public function packageBooted(): void
     {
         // Asset Registration
@@ -70,33 +84,23 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        FilamentAsset::registerScriptData(
-            $this->getScriptData(),
-            $this->getAssetPackageName()
-        );
-
-        // Icon Registration
-        FilamentIcon::register($this->getIcons());
-
-        // Handle Stubs
-        if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
-                $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-publishable/{$file->getFilename()}"),
-                ], 'filament-publishable-stubs');
-            }
-        }
-
         // Testing
         Testable::mixin(new TestsFilamentPublishable());
     }
 
+    /**
+     * Gets the name of the package for asset registration.
+     *
+     * @return string|null
+     */
     protected function getAssetPackageName(): ?string
     {
         return 'jaymeh/filament-publishable';
     }
 
     /**
+     * Gets any assets required for the plugin.
+     *
      * @return array<Asset>
      */
     protected function getAssets(): array
@@ -105,50 +109,6 @@ class FilamentPublishableServiceProvider extends PackageServiceProvider
             // AlpineComponent::make('filament-publishable', __DIR__ . '/../resources/dist/components/filament-publishable.js'),
             Css::make('filament-publishable-styles', __DIR__ . '/../resources/dist/filament-publishable.css'),
             Js::make('filament-publishable-scripts', __DIR__ . '/../resources/dist/filament-publishable.js'),
-        ];
-    }
-
-    /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
-    {
-        return [
-            FilamentPublishableCommand::class,
-        ];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getIcons(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getRoutes(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getMigrations(): array
-    {
-        return [
-            'create_filament-publishable_table',
         ];
     }
 }
