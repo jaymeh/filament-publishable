@@ -24,6 +24,7 @@
         "filament/filament": "^3.0",
         "filament/forms": "^3.0",
         "illuminate/contracts": "^10.0",
+        "pawelmysior/laravel-publishable": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
