@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Jaymeh\FilamentPublishable\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentPublishableCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-publishable';
 
     public $description = 'My command';
 
